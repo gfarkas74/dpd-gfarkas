@@ -8,3 +8,7 @@ A backend oldalon 3 endpointot készítettem, a CRUD ajánlás figyelembevétel�
 A depersonalization részhez tartozó mapping a property file-ban definiálható. Itt megadhatjuk, hogy mely értékeket írjuk át és milyen false értékekre.
 
 Az adatbázis felépítése flyway használatával történik, a tesztelés szintén a flyway-t használja, csak in-memory adatbázissal.
+
+A dockerizációhoz docker-compose.yml file-t készítettem, ami a 
+docker compose up
+utasítással indítható.
