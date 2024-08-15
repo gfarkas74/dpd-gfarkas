@@ -1,6 +1,6 @@
 # dpd-gfarkas
 
-A specifikáció alapján a backend oldalon 3 endpointra van szükség (a feladatod a CRUD ajánlás alapján készítettem):
+A backend oldalon 3 endpointot készítettem, a CRUD ajánlás figyelembevételével:
 - addCustomer - új ügyfél létrehozása - PUT method
 - getCustomer/{id} - ügyfél lekérdezése - GET method
 - depersonalizeCustomer - úgyfél GDPR szerinti adattörlése - PATCH method
