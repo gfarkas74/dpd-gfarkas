@@ -1,0 +1,53 @@
+version: '2'
+
+services:
+  flyway:
+    image: flyway/flyway:8.5.13
+    command: -locations=filesystem:/flyway/migration -connectRetries=60 migrate
+    environment:
+         - FLYWAY_USER=postgres
+         - FLYWAY_PASSWORD=admin
+         - FLYWAY_URL=jdbc:postgresql://172.17.0.1:5432/dpd
+         - FLYWAY_EDITION=10.7.1
+    volumes:
+      - ${PWD}/sql_versions:/flyway/sql
+      - ${PWD}/docker-flyway.config:/flyway/conf/flyway.config
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: sameersbn/postgresql:9.6-2
+    ports:
+      - 5432:5432
+    volumes:
+      - ./storage/postgresql:/var/lib/postgresql
+    environment:
+      - DB_USER=postgres
+      - DB_PASS=admin
+      - DB_NAME=dpd
+      - PG_TRUST_LOCALNET=true
+      - PGHOST=127.0.0.1
+    container_name: dpd
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s 
+  app:
+    build: .
+    image: gfarkas:latest
+    ports: 
+      - 8080:8080
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://172.17.0.1:5432/dpd
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING.FLYWAY.ENABLED=false
+    container_name: gfarkas
+    depends_on:
+      postgres:
+        condition: service_healthy
